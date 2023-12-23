@@ -8,7 +8,7 @@ headers = {
 }
 
 
-def getPaginatedData(url):
+def get_paginated_data(url):
     """
     Retrieve paginated data from a given GitHub API URL.
 
@@ -41,13 +41,8 @@ def get_followers():
         list: A list of usernames representing followers.
     """
     url = "https://api.github.com/user/followers?per_page=100"
-    data = getPaginatedData(url)
-    followers = list()
-
-    for user in data:
-        followers.append(user["login"])
-
-    return followers
+    data = get_paginated_data(url)
+    return [user["login"] for user in data]
 
 
 def get_followings():
@@ -58,13 +53,8 @@ def get_followings():
         list: A list of usernames representing followings.
     """
     url = "https://api.github.com/user/following?per_page=100"
-    data = getPaginatedData(url)
-    followings = list()
-
-    for user in data:
-        followings.append(user["login"])
-
-    return followings
+    data = get_paginated_data(url)
+    return [user["login"] for user in data]
 
 
 def get_ghost_users():
@@ -86,13 +76,14 @@ def get_ghost_users():
 
 
 while True:
-    menue_text = """ENTER A NUMBER FROM THE OPTIONS BELOW:
+    menu_text = """MENU OPTIONS:
     0. Exit
-    1. List your followers
-    2. List your followings
-    3. Unfollow the users that didn't follow you back
-    """
-    choice = input(menue_text)
+    1. List Followers
+    2. List Followings
+    3. Unfollow Users Not Following Back
+    Enter the corresponding number:"""
+
+    choice = input(menu_text)
     if choice == "1":
         followers = get_followers()
         for user in followers:
