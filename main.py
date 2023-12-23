@@ -1,6 +1,6 @@
 import requests
 
-token = "YOUR Github TOKEN"  # don't forget to give your token the access for unfollwing users in github settings
+token = "YOUR Github TOKEN"  # don't forget to give your token the access for unfollowing users in github settings
 headers = {
     "Authorization": f"Bearer {token}",
     "Accept": "application/vnd.github+json",
@@ -9,6 +9,15 @@ headers = {
 
 
 def getPaginatedData(url):
+    """
+    Retrieve paginated data from a given GitHub API URL.
+
+    Args:
+        url (str): The GitHub API URL to retrieve data from.
+
+    Returns:
+        list: A list containing data retrieved from all paginated pages.
+    """
     pagesRemaining = True
     data = list()
 
@@ -25,6 +34,12 @@ def getPaginatedData(url):
 
 
 def get_followers():
+    """
+    Retrieve a list of followers for the authenticated GitHub user.
+
+    Returns:
+        list: A list of usernames representing followers.
+    """
     url = "https://api.github.com/user/followers?per_page=100"
     data = getPaginatedData(url)
     followers = list()
@@ -36,6 +51,12 @@ def get_followers():
 
 
 def get_followings():
+    """
+    Retrieve a list of users that the authenticated GitHub user is following.
+
+    Returns:
+        list: A list of usernames representing followings.
+    """
     url = "https://api.github.com/user/following?per_page=100"
     data = getPaginatedData(url)
     followings = list()
@@ -47,6 +68,12 @@ def get_followings():
 
 
 def get_ghost_users():
+    """
+    Identify users that the authenticated GitHub user is following but who are not following back.
+
+    Returns:
+        list: A list of usernames representing ghost users.
+    """
     followers = get_followers()
     followings = get_followings()
     ghosts = list()
@@ -60,11 +87,11 @@ def get_ghost_users():
 
 while True:
     menue_text = """ENTER A NUMBER FROM THE OPTIONS BELOW:
-0. Exit
-1. List your followers
-2. List your followings
-3. Unfollow the users that didn't follow you back
-"""
+    0. Exit
+    1. List your followers
+    2. List your followings
+    3. Unfollow the users that didn't follow you back
+    """
     choice = input(menue_text)
     if choice == "1":
         followers = get_followers()
@@ -87,7 +114,7 @@ while True:
                 r = requests.delete(url, headers=headers)
                 print(user)
 
-            print(f"\n{ghosts_number} users has been removed.")
+            print(f"\n{ghosts_number} users have been removed.")
         else:
             print("\nCongrats! You have no ghost users.")
 
