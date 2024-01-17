@@ -1,14 +1,14 @@
 import requests
 
-token = "YOUR Github TOKEN"  # don't forget to give your token the access for unfollowing users in github settings
-headers = {
+token: str = "YOUR Github TOKEN"  # don't forget to give your token the access for unfollowing users in github settings
+headers: dict = {
     "Authorization": f"Bearer {token}",
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
 }
 
 
-def get_paginated_data(url):
+def get_paginated_data(url: str) -> list:
     """
     Retrieve paginated data from a given GitHub API URL.
 
@@ -18,55 +18,55 @@ def get_paginated_data(url):
     Returns:
         list: A list containing data retrieved from all paginated pages.
     """
-    pagesRemaining = True
-    data = list()
+    pages_remaining: bool = True
+    data: list = []
 
-    while pagesRemaining:
-        r = requests.get(url, headers=headers)
+    while pages_remaining:
+        r: requests.Response = requests.get(url, headers=headers)
         data += r.json()
 
         if r.links.get("next"):
             url = r.links["next"]["url"]
         else:
-            pagesRemaining = False
+            pages_remaining = False
 
     return data
 
 
-def get_followers():
+def get_followers() -> list:
     """
     Retrieve a list of followers for the authenticated GitHub user.
 
     Returns:
         list: A list of usernames representing followers.
     """
-    url = "https://api.github.com/user/followers?per_page=100"
-    data = get_paginated_data(url)
+    url: str = "https://api.github.com/user/followers?per_page=100"
+    data: list = get_paginated_data(url)
     return [user["login"] for user in data]
 
 
-def get_followings():
+def get_followings() -> list:
     """
     Retrieve a list of users that the authenticated GitHub user is following.
 
     Returns:
         list: A list of usernames representing followings.
     """
-    url = "https://api.github.com/user/following?per_page=100"
-    data = get_paginated_data(url)
+    url: str = "https://api.github.com/user/following?per_page=100"
+    data: list = get_paginated_data(url)
     return [user["login"] for user in data]
 
 
-def get_ghost_users():
+def get_ghost_users() -> list:
     """
     Identify users that the authenticated GitHub user is following but who are not following back.
 
     Returns:
         list: A list of usernames representing ghost users.
     """
-    followers = get_followers()
-    followings = get_followings()
-    ghosts = list()
+    followers: list = get_followers()
+    followings: list = get_followings()
+    ghosts: list = []
 
     for user in followings:
         if user not in followers:
@@ -76,33 +76,33 @@ def get_ghost_users():
 
 
 while True:
-    menu_text = """MENU OPTIONS:
+    menu_text: str = """MENU OPTIONS:
     0. Exit
     1. List Followers
     2. List Followings
     3. Unfollow Users Not Following Back
     Enter the corresponding number:"""
 
-    choice = input(menu_text)
+    choice: str = input(menu_text)
     if choice == "1":
-        followers = get_followers()
+        followers: list = get_followers()
         for user in followers:
             print(user)
         print("\nTotal number of followers:", len(followers))
 
     elif choice == "2":
-        followings = get_followings()
+        followings: list = get_followings()
         for user in followings:
             print(user)
         print("\nTotal number of followings:", len(followings))
 
     elif choice == "3":
-        ghosts = get_ghost_users()
-        ghosts_number = len(ghosts)
+        ghosts: list = get_ghost_users()
+        ghosts_number: int = len(ghosts)
         if ghosts_number:
             for user in ghosts:
-                url = f"https://api.github.com/user/following/{user}"
-                r = requests.delete(url, headers=headers)
+                url: str = f"https://api.github.com/user/following/{user}"
+                r: requests.Response = requests.delete(url, headers=headers)
                 print(user)
 
             print(f"\n{ghosts_number} users have been removed.")
