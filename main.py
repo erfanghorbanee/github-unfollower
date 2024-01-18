@@ -76,29 +76,29 @@ def get_ghost_users() -> list:
 
 
 while True:
-    menu_text: str = """MENU OPTIONS:
+    menu_text = """MENU OPTIONS:
     0. Exit
     1. List Followers
     2. List Followings
     3. Unfollow Users Not Following Back
     Enter the corresponding number:"""
 
-    choice: str = input(menu_text)
+    choice = input(menu_text)
     if choice == "1":
-        followers: list = get_followers()
+        followers = get_followers()
         for user in followers:
             print(user)
         print("\nTotal number of followers:", len(followers))
 
     elif choice == "2":
-        followings: list = get_followings()
+        followings = get_followings()
         for user in followings:
             print(user)
         print("\nTotal number of followings:", len(followings))
 
     elif choice == "3":
-        ghosts: list = get_ghost_users()
-        ghosts_number: int = len(ghosts)
+        ghosts = get_ghost_users()
+        ghosts_number = len(ghosts)
         if ghosts_number:
             for user in ghosts:
                 url: str = f"https://api.github.com/user/following/{user}"
