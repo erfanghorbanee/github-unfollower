@@ -77,11 +77,13 @@ def get_ghost_users() -> list:
 
 while True:
     menu_text = """MENU OPTIONS:
-    0. Exit
-    1. List Followers
-    2. List Followings
-    3. Unfollow Users Not Following Back
-    Enter the corresponding number:"""
+0. Exit
+1. List Followers
+2. List Followings
+3. List Users Not Following Back
+4. Unfollow Users Not Following Back
+
+Enter the corresponding number:"""
 
     choice = input(menu_text)
     if choice == "1":
@@ -101,9 +103,19 @@ while True:
         ghosts_number = len(ghosts)
         if ghosts_number:
             for user in ghosts:
+                print(user)
+            print(f"\n{ghosts_number} users are not following you back.")
+        else:
+            print("\nCongrats! You have no ghost users.")
+
+    elif choice == "4":
+        ghosts = get_ghost_users()
+        ghosts_number = len(ghosts)
+        if ghosts_number:
+            for user in ghosts:
                 url: str = f"https://api.github.com/user/following/{user}"
                 r: requests.Response = requests.delete(url, headers=headers)
-                print(user)
+                print(f'{user} has been unfollowed.')
 
             print(f"\n{ghosts_number} users have been removed.")
         else:
